@@ -1,24 +1,32 @@
 #!/usr/bin/env python3
 """
-This module provides a coroutine that waits for a random delay.
+This module contains an asynchronous routine that spawns wait_random n times
+with the specified max_delay and returns the list of delays.
 """
 
 import asyncio
-import random
-from typing import Union
+from typing import List
+
+# Use __import__ to import from a file starting with a number
+wait_random = __import__('0-basic_async_syntax').wait_random
 
 
-async def wait_random(max_delay: int = 10) -> float:
+async def wait_n(n: int, max_delay: int) -> List[float]:
     """
-    Waits for a random delay between 0 and max_delay seconds and returns it.
+    Spawns wait_random n times with the specified max_delay.
 
     Args:
-        max_delay (int): The maximum delay in seconds. Defaults to 10.
+        n (int): The number of times to spawn wait_random.
+        max_delay (int): The maximum delay in seconds.
 
     Returns:
-        float: The random delay waited.
+        List[float]: A list of delays in ascending order.
     """
-    delay = random.uniform(0, max_delay)
-    await asyncio.sleep(delay)
-    return delay
-
+    delays = []
+    tasks = [wait_random(max_delay) for _ in range(n)]
+    
+    for task in asyncio.as_completed(tasks):
+        delay = await task
+        delays.append(delay)
+    
+    return delays
