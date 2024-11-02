@@ -42,4 +42,3 @@ def measure_time(n: int, max_delay: int) -> float:
     average_time = total_time / n
     # Return the average time
     return average_time
-
