@@ -1,32 +1,40 @@
 #!/usr/bin/env python3
 """
-This module contains an asynchronous routine that spawns wait_random n times
-with the specified max_delay and returns the list of delays.
+This module provides an asynchronous
+coroutine to wait for a random delay.
 """
 
 import asyncio
-from typing import List
-
-# Use __import__ to import from a file starting with a number
-wait_random = __import__('0-basic_async_syntax').wait_random
+import random
+# from typing import Union
 
 
-async def wait_n(n: int, max_delay: int) -> List[float]:
+async def wait_random(max_delay: int = 10) -> float:
     """
-    Spawns wait_random n times with the specified max_delay.
+    Asynchronously waits for a random delay
+    between 0 and max_delay seconds and returns it.
 
-    Args:
-        n (int): The number of times to spawn wait_random.
-        max_delay (int): The maximum delay in seconds.
+    Parameters:
+    max_delay (int, optional): The maximum delay in seconds.
+    Defaults to 10.
 
     Returns:
-        List[float]: A list of delays in ascending order.
+    float: The actual delay time.
     """
-    delays = []
-    tasks = [wait_random(max_delay) for _ in range(n)]
-    
-    for task in asyncio.as_completed(tasks):
-        delay = await task
-        delays.append(delay)
-    
-    return delays
+    # Generate a random delay between 0 and `max_delay`
+
+    # more direct and efficient for generating a random
+    # floating-point number within a specific range
+    delay: float = random.uniform(0, max_delay)
+
+    # Potential for Inaccuracy: Multiplying a random float
+    # between 0 and 1 by `max_delay` might not always produce
+    # a value that reaches the exact `max_delay`
+    # due to floating-point precision
+    # delay: float = random.random() * max_delay
+
+    # Suspend the coroutine for the specified delay
+    await asyncio.sleep(delay)
+
+    # Return the actual delay
+    return delay
